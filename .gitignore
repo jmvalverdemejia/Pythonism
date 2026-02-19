@@ -1,0 +1,14 @@
+# Python junk
+__pycache__/
+*.py[cod]
+venv/
+.env
+
+# Streamlit junk
+.streamlit/
+
+# Data & Secrets
+*.csv
+status_chart.png
+*.exe
+*.msix
