@@ -42,3 +42,4 @@ st.dataframe(df, use_container_width=True)
 # 5. Quick Analytics
 done_count = len(df[df["Status"] == "Done"])
 st.info(f"Progress Check: {done_count} out of {len(df)} tasks are completed.")
+# ending
