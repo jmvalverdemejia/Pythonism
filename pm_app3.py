@@ -46,7 +46,14 @@ st.info(f"Progress Check: {done_count} out of {len(df)} tasks are completed.")
 
 # --- AI Configuration ---
 # Replace 'YOUR_API_KEY' with the key you just got
-genai.configure(api_key="AIzaSyBA_xv5inXm3rhIQqOG1kxHVimvJVf9Cu4")
+# genai.configure(api_key="AIzaSyBA_xv5inXm3rhIQqOG1kxHVimvJVf9Cu4")
+
+# Modern Python way: Get the key from the cloud environment
+
+# This will look for a secret named 'GEMINI_API_KEY'
+api_key = st.secrets["GEMINI_API_KEY"]
+genai.configure(api_key=api_key)
+
 model = genai.GenerativeModel("gemini-2.5-flash")
 
 st.divider()
