@@ -84,10 +84,20 @@ if st.button("Generate Stakeholder Email"):
     with st.spinner("Writing email..."):
         try:
             response = model.generate_content(prompt)
-            st.subheader("Draft Email:")
-            st.info(response.text)
+            email_draft = response.text  # Store the text in a variable
 
-            # Bonus: A "Copy to Clipboard" feel
-            st.download_button("Download Email as Text", response.text)
+            # Show the result in the UI
+            st.subheader("Draft Email:")
+            st.info(email_draft)
+
+            # --- THE DOWNLOAD MAGIC ---
+            # This creates a 'Virtual File' in the user's browser
+            st.download_button(
+                label="💾 Download Email as .txt",
+                data=email_draft,
+                file_name=f"status_report_{selected_issue}.txt",
+                mime="text/plain",
+            )
+
         except Exception as e:
             st.error(f"AI Error: {e}")
