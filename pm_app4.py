@@ -56,7 +56,7 @@ st.info(f"Progress Check: {done_count} out of {len(df)} tasks are completed.")
 
 # --- AI Configuration ---
 # Replace 'YOUR_API_KEY' with the key you just got
-# genai.configure(api_key="AIzaSyBA_xv5inXm3rhIQqOG1kxHVimvJVf9Cu4")
+# genai.configure(api_key="YOUR_API_KEY")
 
 # Modern Python way: Get the key from the cloud environment
 
