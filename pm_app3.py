@@ -2,7 +2,7 @@ import streamlit as st
 import pandas as pd
 import google.generativeai as genai
 
-# --- 1. Cloud Secrets Setup ---
+# --- 1. Cloud Secrets Setup ---_
 api_key = st.secrets["GEMINI_API_KEY"]
 genai.configure(api_key=api_key)
 model = genai.GenerativeModel("gemini-2.5-flash")
