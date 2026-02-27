@@ -19,10 +19,48 @@ if uploaded_file is not None:
 
     st.success("File loaded successfully!")
 
+    st.divider()
+    st.header("📈 Work Distribution")
+
+    # 1. Prepare the data (The 'Pivot')
+    # We group by Status and sum the Story Points
+    chart_data = df.groupby("Status")["Story Points"].sum()
+
+    # 2. Render the chart
+    # In Java 2, this was 100 lines. Here, it's one.
+    st.bar_chart(chart_data)
+
     # --- 3. Sidebar Selection ---
     # We use the 'Issue Key' column to fill the dropdown
     selected_issue = st.sidebar.selectbox("Select an Issue", df["Issue Key"])
     issue_data = df[df["Issue Key"] == selected_issue].iloc[0]
+
+    # Create two tabs: one for the deep dive, one for the big picture
+    tab1, tab2 = st.tabs(["🔍 Issue Detail", "📊 Team Analytics"])
+
+    with tab1:
+        st.subheader(f"Analysis for: {selected_issue}")
+        # Move your existing Issue Details and AI Email logic here
+        st.write(f"**Summary:** {issue_data['Summary']}")
+        # ... (rest of your existing detail code)
+
+    with tab2:
+        st.subheader("Velocity & Status Distribution")
+
+        # Calculate some quick metrics for the top of the tab
+        total_points = df["Story Points"].sum()
+        avg_points = df["Story Points"].mean()
+
+        col_a, col_b = st.columns(2)
+        col_a.metric("Total Story Points", total_points)
+        col_b.metric("Avg Points per Task", f"{avg_points:.1f}")
+
+        # Show the chart we just created
+        st.bar_chart(chart_data)
+
+        # Let's add a raw data view at the bottom
+        with st.expander("See Raw Data Table"):
+            st.dataframe(df)
 
     # --- 4. Dashboard Logic (The rest of your code) ---
     col1, col2 = st.columns(2)
