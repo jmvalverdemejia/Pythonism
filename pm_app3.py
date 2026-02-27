@@ -41,10 +41,39 @@ if uploaded_file is not None:
     # --- 5. The AI Feature ---
     st.divider()
     if st.button("Generate Stakeholder Email"):
-        prompt = f"Write a PM email for: {issue_data['Summary']} (Status: {issue_data['Status']})"
-        with st.spinner("Writing..."):
+        prompt = f"""
+You are a Senior Project Manager. Write a professional status update email.
+Task: {issue_data["Summary"]}
+Status: {issue_data["Status"]}
+Priority: {issue_data["Priority"]}
+
+Formatting Instructions:
+1. Use a clear **Subject Line**.
+2. Use ## for the main heading.
+3. Use **bolding** for critical dates or names.
+4. Use bullet points for "Next Steps".
+5. Keep the tone professional yet approachable.
+"""
+        with st.spinner("AI is drafting..."):
             response = model.generate_content(prompt)
-            st.info(response.text)
+            email_draft = response.text
+
+            # --- REFINED OUTPUT DISPLAY ---
+            st.subheader("Final Draft Review")
+
+            # We use a container with a border to make it look like a 'document'
+            with st.container(border=True):
+                st.markdown(email_draft)  # This renders the bold, headers, and lists
+                st.toast("Email Drafted Successfully!", icon="✉️")
+                st.balloons()  # Use this sparingly, but it's fun for the first time!
+
+            # Move the download button below the preview
+            st.download_button(
+                label="💾 Download as Text File",
+                data=email_draft,
+                file_name=f"Update_{selected_issue}.txt",
+                mime="text/plain",
+            )
 
 else:
     # This part runs if NO file is uploaded
