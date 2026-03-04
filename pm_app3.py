@@ -8,12 +8,26 @@ def generate_pdf_report(issue_key, summary, points, status, email_body):
     pdf = FPDF()
     pdf.add_page()
 
+    # 1. ADD THE LOGO
+    # Use a direct URL to a logo (replace with your own!)
+    # Tip: Use a PNG with a white or transparent background
+    logo_url = "https://streamlit.io/images/brand/streamlit-logo-primary-colormark-darktext.png"
+
+    # pdf.image(name, x, y, w)
+    # x=10 (left), y=8 (top), w=33 (width in mm)
+    try:
+        pdf.image(logo_url, x=160, y=8, w=33)
+    except:
+        pass  # If the URL is broken, the PDF will still generate without the logo
+
+    # 2. SANITIZE AND DRAW TEXT
     # Sanitize all inputs to avoid the FPDFUnicodeEncodingException
     safe_summary = sanitize_text(summary)
     safe_email = sanitize_text(email_body)
 
     pdf.set_font("Helvetica", "B", 20)
-    pdf.cell(0, 15, f"Executive Report: {issue_key}", ln=True, align="C")
+    pdf.ln(10)  # Move down a bit so we don't overlap the logo
+    pdf.cell(0, 15, f"Executive Report: {issue_key}", ln=True, align="L")
 
     pdf.ln(10)
     pdf.set_font("Helvetica", "", 12)
