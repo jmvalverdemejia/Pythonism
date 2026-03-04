@@ -8,15 +8,16 @@ def generate_pdf_report(issue_key, summary, points, status, email_body):
     pdf = FPDF()
     pdf.add_page()
 
-    # Header
+    # Sanitize all inputs to avoid the FPDFUnicodeEncodingException
+    safe_summary = sanitize_text(summary)
+    safe_email = sanitize_text(email_body)
+
     pdf.set_font("Helvetica", "B", 20)
     pdf.cell(0, 15, f"Executive Report: {issue_key}", ln=True, align="C")
-    pdf.line(10, 25, 200, 25)  # Draw a horizontal line
 
-    # Metadata Section
-    pdf.set_font("Helvetica", "B", 12)
     pdf.ln(10)
-    pdf.cell(0, 10, f"Project Summary: {summary}", ln=True)
+    pdf.set_font("Helvetica", "", 12)
+    pdf.cell(0, 10, f"Project Summary: {safe_summary}", ln=True)  # Use safe version
     pdf.set_font("Helvetica", "", 12)
     pdf.cell(0, 10, f"Current Status: {status}", ln=True)
     pdf.cell(0, 10, f"Story Points: {points}", ln=True)
@@ -28,7 +29,8 @@ def generate_pdf_report(issue_key, summary, points, status, email_body):
     pdf.set_font("Helvetica", "", 11)
 
     # Multi_cell handles text wrapping (no more manual line breaks!)
-    pdf.multi_cell(0, 8, email_body)
+    # pdf.multi_cell(0, 8, email_body)
+    pdf.multi_cell(0, 8, safe_email)  # Use safe version
 
     # Footer
     pdf.set_y(-25)
@@ -37,6 +39,26 @@ def generate_pdf_report(issue_key, summary, points, status, email_body):
 
     # Return the PDF as a binary string
     return pdf.output()
+
+
+def sanitize_text(text):
+    """Replaces common Unicode characters with PDF-safe equivalents."""
+    if not text:
+        return ""
+    # Map of "Fancy" characters to "Plain" characters
+    replacements = {
+        "\u2013": "-",  # en-dash
+        "\u2014": "-",  # em-dash
+        "\u201c": '"',  # left curly quote
+        "\u201d": '"',  # right curly quote
+        "\u2018": "'",  # left single quote
+        "\u2019": "'",  # right single quote
+    }
+    for unicode_char, ascii_char in replacements.items():
+        text = text.replace(unicode_char, ascii_char)
+
+    # Final safety net: encode to latin-1 and ignore anything that fails
+    return text.encode("latin-1", "replace").decode("latin-1")
 
 
 # --- 1. Cloud Secrets Setup ---_
