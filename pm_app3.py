@@ -80,6 +80,35 @@ api_key = st.secrets["GEMINI_API_KEY"]
 genai.configure(api_key=api_key)
 model = genai.GenerativeModel("gemini-2.5-flash")
 
+# --- 2. THE SIDEBAR SECTION (Put this here!) ---
+st.sidebar.title("⚙️ Project Settings")
+
+# Theme Toggle
+dark_mode = st.sidebar.toggle("Developer Dark Mode")
+
+if dark_mode:
+    st.markdown(
+        """
+        <style>
+        .stApp { background-color: #0E1117; color: #FAFAFA; }
+        [data-testid="stSidebar"] { background-color: #262730; }
+        </style>
+        """,
+        unsafe_allow_html=True,
+    )
+else:
+    st.markdown(
+        """
+        <style>
+        .stApp { background-color: #FFFFFF; color: #31333F; }
+        </style>
+        """,
+        unsafe_allow_html=True,
+    )
+
+st.sidebar.divider()  # Adds a nice visual line
+
+
 st.title("📊 Universal Jira Dashboard")
 
 # --- 2. The Dynamic File Uploader ---
