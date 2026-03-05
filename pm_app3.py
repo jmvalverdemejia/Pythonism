@@ -132,6 +132,52 @@ if uploaded_file is not None:
     # In Java 2, this was 100 lines. Here, it's one.
     st.bar_chart(chart_data)
 
+    # --- PROJECT HEALTH CALCULATION ---
+    total_tasks = len(df)
+    done_tasks = len(df[df["Status"] == "Done"])
+    blocked_tasks = len(
+        df[df["Status"] == "Blocked"]
+    )  # Assumes your Jira has a 'Blocked' status
+
+    # Calculate health percentage
+    health_pct = (done_tasks / total_tasks) * 100 if total_tasks > 0 else 0
+
+    # --- THE GAUGE DISPLAY ---
+    st.subheader("🏥 Project Pulse")
+    h_col1, h_col2, h_col3 = st.columns(3)
+
+    with h_col1:
+        # Green if many tasks are done
+        st.metric(
+            "Completion",
+            f"{health_pct:.0f}%",
+            delta=f"{done_tasks} Tasks",
+            delta_color="normal",
+        )
+
+    with h_col2:
+        # Red if we have blocked tasks
+        # We use delta_color="inverse" so that positive numbers show as RED (because blocks are bad!)
+        st.metric(
+            "Blockers",
+            blocked_tasks,
+            delta="- Action Required" if blocked_tasks > 0 else "Clear",
+            delta_color="inverse",
+        )
+
+    with h_col3:
+        # A simple health status
+        if blocked_tasks > 3:
+            status_text = "CRITICAL"
+            color = "🔴"
+        elif blocked_tasks > 0:
+            status_text = "WARNING"
+            color = "🟡"
+        else:
+            status_text = "HEALTHY"
+            color = "🟢"
+        st.write(f"### Status: {color} {status_text}")
+
     # --- 3. Sidebar Selection ---
     # We use the 'Issue Key' column to fill the dropdown
     selected_issue = st.sidebar.selectbox("Select an Issue", df["Issue Key"])
