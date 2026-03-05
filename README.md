@@ -1,31 +1,27 @@
-# 🚀 PM AI Priority Dashboard
+# 🚀 PM Strategy Hub v1.0
 
-A modern tool for Project Managers to analyze Jira exports and generate AI-driven status reports. 
+A high-performance Project Management dashboard designed to turn raw Jira exports into executive-ready insights using Google Gemini AI.
 
-## 📋 Features
-* **Interactive Dashboard:** Built with Streamlit for real-time data filtering.
-* **Pandas Integration:** High-speed processing of Jira CSV exports.
-* **AI Analysis:** Leverages Google Gemini to draft stakeholder emails.
+## 🌟 Executive Features
+* **🏥 Project Pulse:** Real-time health monitoring (Red/Yellow/Green) based on blocker counts.
+* **🤖 AI Briefing:** One-click stakeholder email generation using `gemini-1.5-flash`.
+* **📊 Team Analytics:** Automated Story Point distribution and velocity tracking.
+* **📄 Executive Export:** Professional PDF report generation with corporate branding.
+* **🌓 Developer Mode:** Reactive Dark/Light mode toggle for high-focus environments.
 
-## 🛠️ Technology Stack
-* **Python 3.13** (The engine)
-* **Streamlit** (The UI)
-* **Pandas** (Data Manipulation)
-* **Google Generative AI** (The "Brain")
+## 🛠️ Modern Tech Stack
+* **Frontend:** Streamlit (Reactive Python Framework)
+* **Brain:** Google Gemini API
+* **Data:** Pandas (Vectorized Data Manipulation)
+* **Reports:** FPDF2 (Binary PDF Streaming)
+* **Deployment:** Streamlit Community Cloud (CI/CD via GitHub)
 
-## 🚀 Getting Started
-
-### 1. Clone the repository
-`git clone https://github.com/your-username/pythonism.git`
-
-### 2. Install dependencies
-`pip install -r requirements.txt`
-
-### 3. Set up your API Key
-You will need a Gemini API Key from [Google AI Studio](https://aistudio.google.com/).
-
-### 4. Run the app
-`python -m streamlit run pm_app.py`
+## 📥 How to Use
+1.  Export your issues from Jira as a **CSV**.
+2.  Upload the file to the **Universal Dashboard**.
+3.  Monitor the **Project Pulse** for immediate risks.
+4.  Select a critical issue and generate an **AI Status Report**.
+5.  Download the **Executive PDF** for your next stand-up.
 
 ---
-*Created by [Your Name] - 2026 Modernization Journey*
+*Built by a Modern PM | 2026*
