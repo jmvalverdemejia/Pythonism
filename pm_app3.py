@@ -3,6 +3,21 @@ import pandas as pd
 import google.generativeai as genai
 from fpdf import FPDF
 
+from supabase import create_client, Client
+
+# --- DB SETUP ---
+url = st.secrets["SUPABASE_URL"]
+key = st.secrets["SUPABASE_KEY"]
+supabase: Client = create_client(url, key)
+
+
+# --- SAVE TO DB FUNCTION ---
+def save_report_to_db(issue_key, summary, email_body):
+    data = {"issue_key": issue_key, "summary": summary, "email_body": email_body}
+    # In 2026, we don't write "INSERT INTO..."
+    # We use a clean Python "Post" method.
+    supabase.table("reports").insert(data).execute()
+
 
 def generate_pdf_report(issue_key, summary, points, status, email_body):
     pdf = FPDF()
@@ -184,7 +199,12 @@ if uploaded_file is not None:
     issue_data = df[df["Issue Key"] == selected_issue].iloc[0]
 
     # Create two tabs: one for the deep dive, one for the big picture
-    tab1, tab2 = st.tabs(["🔍 Issue Detail", "📊 Team Analytics"])
+    # tab1, tab2 = st.tabs(["🔍 Issue Detail", "📊 Team Analytics"])
+
+    # Add a third tab to your existing tab list
+    tab1, tab2, tab3 = st.tabs(
+        ["🔍 Issue Detail", "📊 Team Analytics", "📜 Report History"]
+    )
 
     with tab1:
         st.subheader(f"Analysis for: {selected_issue}")
@@ -209,6 +229,29 @@ if uploaded_file is not None:
         # Let's add a raw data view at the bottom
         with st.expander("See Raw Data Table"):
             st.dataframe(df)
+
+    with tab3:
+        st.subheader("Global Report Archive")
+        # Fetch data from Supabase
+        response = (
+            supabase.table("reports")
+            .select("*")
+            .order("created_at", desc=True)
+            .execute()
+        )
+        history_df = pd.DataFrame(response.data)
+
+        if not history_df.empty:
+            st.dataframe(history_df[["created_at", "issue_key", "summary"]])
+
+            # Let the user pick an old report to view
+            selected_report_id = st.selectbox("View Archived Email", history_df["id"])
+            selected_text = history_df[history_df["id"] == selected_report_id][
+                "email_body"
+            ].values[0]
+            st.info(selected_text)
+        else:
+            st.write("No reports found in the archive yet.")
 
     # --- 4. Dashboard Logic (The rest of your code) ---
     col1, col2 = st.columns(2)
@@ -252,6 +295,10 @@ Formatting Instructions:
                 st.markdown(email_draft)  # This renders the bold, headers, and lists
                 st.toast("Email Drafted Successfully!", icon="✉️")
                 st.balloons()  # Use this sparingly, but it's fun for the first time!
+
+            # NEW: Save to the cloud database automatically
+            save_report_to_db(selected_issue, issue_data["Summary"], email_draft)
+            st.success("Report saved to Database! ✅")
 
             # Move the download button below the preview
             st.download_button(
